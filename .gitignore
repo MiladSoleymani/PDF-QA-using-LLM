@@ -70,6 +70,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+input_path/
+save_path/
 
 # PyBuilder
 .pybuilder/
