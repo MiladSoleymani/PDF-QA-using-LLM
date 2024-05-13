@@ -8,8 +8,8 @@ from typing import Dict
 
 import torch
 import transformers
-from transformers import whoami
 from langchain_community.document_loaders import PyPDFLoader
+from huggingface_hub import login
 
 
 def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
@@ -99,8 +99,7 @@ def main(conf: Dict) -> None:
     save_path = conf["save_path"]
     token = conf["token"]
 
-    user = whoami(token=token)
-    print(user)
+    login(token=token)
 
     model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
@@ -153,6 +152,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--save_path",
         type=str,
+        required=True,
         default="panel_summary",
         help="Path to save the resulting JSON files.",
     )

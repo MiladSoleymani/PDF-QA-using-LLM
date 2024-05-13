@@ -122,6 +122,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--save_path",
         type=str,
+        required=True,
         default="panel_summary",
         help="Path to save the resulting JSON files.",
     )
