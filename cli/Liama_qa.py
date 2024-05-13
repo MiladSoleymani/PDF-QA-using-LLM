@@ -50,7 +50,7 @@ def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
 
     outputs = pipeline(
         prompt,
-        max_new_tokens=1024,
+        max_new_tokens=2048,
         eos_token_id=terminators,
         do_sample=True,
         temperature=0.6,
