@@ -1,0 +1,7 @@
+psutil
+torch
+transformers
+accelerate
+langchain
+pypdf
+openai
