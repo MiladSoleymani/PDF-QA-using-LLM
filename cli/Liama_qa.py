@@ -58,7 +58,9 @@ def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
     )
     text = outputs[0]["generated_text"][len(prompt) :]
 
-    start_index = text.find("json") + len("json") + 1
+    print(text)
+
+    start_index = text.find("```") + len("```") + 1
     end_index = text.find("```", start_index)
     json_str = text[start_index:end_index]
 
