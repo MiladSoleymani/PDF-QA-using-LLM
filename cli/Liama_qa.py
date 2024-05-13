@@ -35,7 +35,7 @@ def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
         },
         {
             "role": "user",
-            "content": "give me complete panel summary table in json format, please make sure to give me a correct json format, also Name all the tables panelـsummary.",
+            "content": "give me the pannel summary table completely in json format",
         },
     ]
 
@@ -57,8 +57,6 @@ def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
         top_p=0.9,
     )
     text = outputs[0]["generated_text"][len(prompt) :]
-
-    print(text)
 
     start_index = text.find("```") + len("```") + 1
     end_index = text.find("```", start_index)
