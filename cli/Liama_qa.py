@@ -13,6 +13,8 @@ from huggingface_hub import login
 
 import pandas as pd
 
+from LIAMA import patient_info_table, test_results_table, panel_summary_table
+
 
 def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
     """
@@ -26,68 +28,17 @@ def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
     loader = PyPDFLoader(file_path)
     documents = loader.load()
 
-    messages = [
-        {
-            "role": "system",
-            "content": "You're a chatbot designed to help in finding tables within PDFs.",
-        },
-        {
-            "role": "assistant",
-            "content": documents[1].page_content,
-        },
-        {
-            "role": "user",
-            "content": "give me the pannel summary table completely in json format",
-        },
-    ]
+    patient_info_table(documents[0].page_content, pipeline, os.path.join(
+            save_path, os.path.basename(file_path).replace(".pdf", "") + "_patient_info.csv"
+        ))
 
-    prompt = pipeline.tokenizer.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True
-    )
-
-    terminators = [
-        pipeline.tokenizer.eos_token_id,
-        pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>"),
-    ]
-
-    outputs = pipeline(
-        prompt,
-        max_new_tokens=2048,
-        eos_token_id=terminators,
-        do_sample=True,
-        temperature=0.6,
-        top_p=0.9,
-    )
-    text = outputs[0]["generated_text"][len(prompt) :]
-
-    start_index = text.find("```") + len("```") + 1
-    end_index = text.find("```", start_index)
-    json_str = text[start_index:end_index]
-
-    try:
-        json_data = json.loads(json_str)
-
-        result = {}
-        for idx, data in enumerate(json_data):
-            result[idx] = data
-
-        df = pd.DataFrame.from_dict(result, orient="index")
-        csv_save_path = os.path.join(
-            save_path, os.path.basename(file_path).replace(".pdf", "") + ".csv"
-        )
-
-        df.to_csv(csv_save_path)
-
-    except Exception as e:
-        print(f"Error in loading json string: {e}")
-        # Open the file in write mode
-        txt_save_path = os.path.join(
-            save_path, os.path.basename(file_path).replace(".pdf", "") + ".txt"
-        )
-        with open(txt_save_path, "w") as file:
-            # Write the string to the file
-            file.write(json_str)
-
+    test_results_table(documents[0].page_content, pipeline, os.path.join(
+            save_path, os.path.basename(file_path).replace(".pdf", "") + "_test_results_table.csv"
+        ))
+    
+    panel_summary_table(documents[1].page_content, pipeline, os.path.join(
+            save_path, os.path.basename(file_path).replace(".pdf", "") + "_panel_summary_table.csv"
+        ))
 
 def measure_performance() -> Dict[str, float]:
     """
