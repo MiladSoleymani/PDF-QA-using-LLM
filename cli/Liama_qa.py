@@ -10,8 +10,7 @@ import transformers
 from langchain_community.document_loaders import PyPDFLoader
 from huggingface_hub import login
 
-from src.LIAMA import patient_info_table, test_results_table, panel_summary_table
-
+from helpers.LIAMA import patient_info_table, test_results_table, panel_summary_table
 
 def process_pdf_file(file_path: str, pipeline, save_path: str) -> None:
     """
