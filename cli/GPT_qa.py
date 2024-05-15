@@ -8,6 +8,8 @@ from typing import Dict
 from openai import OpenAI
 from langchain_community.document_loaders import PyPDFLoader
 
+import pandas as pd
+
 
 def process_pdf_file(file_path: str, api_key: str, save_path: str) -> None:
     """
@@ -50,13 +52,19 @@ def process_pdf_file(file_path: str, api_key: str, save_path: str) -> None:
     json_str = text[start_index:end_index]
 
     try:
-        data = json.loads(json_str)
+        json_data = json.loads(json_str)
 
-        json_save_path = os.path.join(
-            save_path, os.path.basename(file_path).replace(".pdf", "") + ".json"
+        result = {}
+        for idx, data in enumerate(json_data):
+            result[idx] = data
+
+        df = pd.DataFrame.from_dict(result, orient="index")
+        csv_save_path = os.path.join(
+            save_path, os.path.basename(file_path).replace(".pdf", "") + ".csv"
         )
-        with open(json_save_path, "w") as f:
-            json.dump(data, f, indent=2)
+
+        df.to_csv(csv_save_path)
+
     except Exception as e:
         print(f"Error in loading json string: {e}")
         # Open the file in write mode
