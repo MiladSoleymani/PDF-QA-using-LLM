@@ -134,7 +134,7 @@ def panel_summary_table(page_content: str, pipeline, save_path: str) -> None:
 
         result = {}
 
-        for idx, data in enumerate(json_data["Test-Results"]):
+        for idx, data in enumerate(json_data["panel-summary"]):
             result[idx] = data
 
         df = pd.DataFrame.from_dict(result, orient="index")
