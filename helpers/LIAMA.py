@@ -117,7 +117,7 @@ def panel_summary_table(page_content: str, pipeline, save_path: str) -> None:
 
     outputs = pipeline(
         prompt,
-        max_new_tokens=2048,
+        max_new_tokens=4096,
         eos_token_id=terminators,
         do_sample=True,
         temperature=0.6,
